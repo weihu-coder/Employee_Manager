@@ -48,7 +48,7 @@ int main()
             break;
         case 6:wm.Sort_Emp(); //排序职工
             break;
-        case 7: //清空职工
+        case 7:wm.Clean_Emp(); //清空职工
             break;
         default:
             system("cls"); //清屏

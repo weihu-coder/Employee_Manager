@@ -75,14 +75,16 @@ void WorkerManager:: ExitSystem() {
 
 void WorkerManager::Add_Emp() {
 	cout << "请输入添加职工数量：" << endl;
+
 	int addNum = 0;//保存用户输入的数量
 	cin >> addNum;
+
 	if (addNum > 0) {
 		//添加
 		//计算添加的新空间大小
 		int newSize = this->m_EmpNum + addNum;//新空间人数 = 原来空间人数 + 新增人数
 		//开辟新空间
-		Worker** newSpace = new Worker * [newSize];
+		Worker** newSpace = new Worker * [newSize * sizeof(Worker)];
 
 		//将原来空间下数据，拷贝到新空间
 		if (this->m_EmpArray != NULL) {
@@ -445,9 +447,47 @@ void WorkerManager::Sort_Emp() {
 	}
 }
 
+//清空文件信息
+void WorkerManager::Clean_Emp() {
+	cout << "确认清空吗？" << endl;
+	cout << "1、确定" << endl;
+	cout << "2、返回" << endl;
+
+	int select = 0;
+	cin >> select;
+
+	if (select == 1) {
+		//清空文件
+		ofstream ofs(FILENAME, ios::trunc);
+		ofs.close();
+
+		if (this->m_EmpArray != NULL) {
+			//删除堆区的每个职工对象
+			for (int i = 0; i < m_EmpNum; i++) {
+				delete this->m_EmpArray[i];
+				this->m_EmpArray[i] = NULL;
+			}
+
+			//删除堆区数组指针
+			delete[] this->m_EmpArray;
+			this->m_EmpArray = NULL;
+			this->m_EmpNum = 0;
+			this->m_FileIsEmpty = true;
+		}
+		cout << "清空成功！" << endl;
+	}
+	system("pause");
+	system("cls");
+}
+
 WorkerManager::~WorkerManager() {
 	if (this->m_EmpArray != NULL) {
-		delete[] m_EmpArray;
-		m_EmpArray = NULL;
+		for (int i = 1; i < this->m_EmpNum; i++) {
+			if (this->m_EmpArray[i] != NULL) {
+				delete this->m_EmpArray[i];
+			}
+		}
+		delete[] this->m_EmpArray;
+		this->m_EmpArray = NULL;
 	}
 }
